@@ -2,11 +2,21 @@
 #include <cstdio>
 #include <stdio.h>
 
+enum {
+    KEY_PRESS_SURFACE_DEFAULT,
+    KEY_PRESS_SURFACE_UP,
+    KEY_PRESS_SURFACE_DOWN,
+    KEY_PRESS_SURFACE_LEFT,
+    KEY_PRESS_SURFACE_RIGHT,
+    KEY_PRESS_SURFACE_TOTAl
+};
+
 bool init(SDL_Window* &window, SDL_Surface* &screen_surface);
 bool load_white_surface(SDL_Window* &window, SDL_Surface* &screen_surface);
 bool load_media(SDL_Window* &window, SDL_Surface* &screen_surface);
 void quit(SDL_Window* &window, SDL_Surface* &image_surface);
 void stay_up();
+void run(SDL_Window* &window, SDL_Surface* &screen_surface, SDL_Surface* &image_surface);
 
 const int WINDOW_HEIGHT = 600;
 const int WINDOW_WIDTH = 800;
@@ -31,9 +41,7 @@ int main (int argc, char* args[]) {
         return 1;
     }
 
-    SDL_BlitSurface(image_surface, NULL, screen_surface, NULL);
-    SDL_UpdateWindowSurface(window);
-    stay_up();
+    run(window, screen_surface, image_surface);
 
     quit(window, image_surface);
     return 0;
@@ -100,5 +108,21 @@ void stay_up() {
                 quit = true;
             }
         }
+    }
+}
+
+void run(SDL_Window* &window, SDL_Surface* &screen_surface, SDL_Surface* &image_surface) {
+    bool quit = false;
+    SDL_Event event;
+
+    while (!quit) {
+        while (SDL_PollEvent(&event) != 0) {
+            if (event.type == SDL_QUIT) {
+                quit = true;
+            }
+        }
+
+        SDL_BlitSurface(image_surface, NULL, screen_surface, NULL);
+        SDL_UpdateWindowSurface(window);
     }
 }
