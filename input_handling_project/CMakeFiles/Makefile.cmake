@@ -14,6 +14,7 @@ set(CMAKE_MAKEFILE_DEPENDS
   "/opt/homebrew/Cellar/cmake/3.25.2/share/cmake/Modules/CMakeCInformation.cmake"
   "/opt/homebrew/Cellar/cmake/3.25.2/share/cmake/Modules/CMakeCXXInformation.cmake"
   "/opt/homebrew/Cellar/cmake/3.25.2/share/cmake/Modules/CMakeCommonLanguageInclude.cmake"
+  "/opt/homebrew/Cellar/cmake/3.25.2/share/cmake/Modules/CMakeFindDependencyMacro.cmake"
   "/opt/homebrew/Cellar/cmake/3.25.2/share/cmake/Modules/CMakeGenericSystem.cmake"
   "/opt/homebrew/Cellar/cmake/3.25.2/share/cmake/Modules/CMakeInitializeConfigs.cmake"
   "/opt/homebrew/Cellar/cmake/3.25.2/share/cmake/Modules/CMakeLanguageInformation.cmake"
@@ -35,6 +36,8 @@ set(CMAKE_MAKEFILE_DEPENDS
   "/opt/homebrew/Cellar/cmake/3.25.2/share/cmake/Modules/Platform/UnixPaths.cmake"
   "/opt/homebrew/lib/cmake/SDL2/sdl2-config-version.cmake"
   "/opt/homebrew/lib/cmake/SDL2/sdl2-config.cmake"
+  "/opt/homebrew/lib/cmake/SDL2_image/sdl2_image-config-version.cmake"
+  "/opt/homebrew/lib/cmake/SDL2_image/sdl2_image-config.cmake"
   )
 
 # The corresponding makefile is:

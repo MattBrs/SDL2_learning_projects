@@ -12,8 +12,9 @@ include_directories(
 
 
 find_package(SDL2 REQUIRED)
+find_package(SDL2_image REQUIRED)
 
 
 add_executable(main ${PROJECT_SOURCE_DIR}/main.cpp)
 link_libraries(main PRIVATE "/opt/homebrew/lib/")
-target_link_libraries(main SDL2)
+target_link_libraries(main SDL2 SDL2_image)

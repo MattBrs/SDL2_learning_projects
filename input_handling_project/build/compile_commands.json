@@ -1,0 +1,7 @@
+[
+{
+  "directory": "/Users/matteobrusa/Documents/cpp_sdl2/input_handling_project/build",
+  "command": "/usr/bin/clang++  -I/Users/matteobrusa/Documents/cpp_sdl2/input_handling_project -I/Users/matteobrusa/Documents/cpp_sdl2/input_handling_project/build -I/opt/homebrew/include -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk -o CMakeFiles/main.dir/main.cpp.o -c /Users/matteobrusa/Documents/cpp_sdl2/input_handling_project/main.cpp",
+  "file": "/Users/matteobrusa/Documents/cpp_sdl2/input_handling_project/main.cpp"
+}
+]

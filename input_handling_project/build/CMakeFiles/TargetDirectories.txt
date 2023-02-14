@@ -1,0 +1,3 @@
+/Users/matteobrusa/Documents/cpp_sdl2/input_handling_project/build/CMakeFiles/main.dir
+/Users/matteobrusa/Documents/cpp_sdl2/input_handling_project/build/CMakeFiles/edit_cache.dir
+/Users/matteobrusa/Documents/cpp_sdl2/input_handling_project/build/CMakeFiles/rebuild_cache.dir

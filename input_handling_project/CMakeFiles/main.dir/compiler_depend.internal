@@ -3,6 +3,7 @@
 
 CMakeFiles/main.dir/main.cpp.o
  /Users/matteobrusa/Documents/cpp_sdl2/input_handling_project/main.cpp
+ /opt/homebrew/include/SDL2/SDL_image.h
  /opt/homebrew/include/SDL2/SDL.h
  /opt/homebrew/include/SDL2/SDL_main.h
  /opt/homebrew/include/SDL2/SDL_stdinc.h
