@@ -1,3 +1,0 @@
-/Users/matteobrusa/Documents/cpp_sdl2/learning_project/CMakeFiles/main.dir
-/Users/matteobrusa/Documents/cpp_sdl2/learning_project/CMakeFiles/edit_cache.dir
-/Users/matteobrusa/Documents/cpp_sdl2/learning_project/CMakeFiles/rebuild_cache.dir
