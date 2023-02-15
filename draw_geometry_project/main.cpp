@@ -8,6 +8,7 @@
 #include "SDL2/SDL_video.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <cstddef>
 #include <cstdio>
 #include <stdio.h>
 #include <string>
@@ -98,6 +99,15 @@ void run(SDL_Window* &window) {
         SDL_SetRenderDrawColor(g_renderer, 0xff, 0xff, 0xff, 0xff);
         SDL_RenderClear(g_renderer);
 
+        // viewport to draw geometry on the entire window
+        SDL_Rect window_viewport;
+        window_viewport.x = 0;
+        window_viewport.y = 0;
+        window_viewport.w = WINDOW_WIDTH;
+        window_viewport.h = WINDOW_HEIGHT;
+
+        SDL_RenderSetViewport(g_renderer, &window_viewport);
+
         SDL_Rect inner_rect = {WINDOW_WIDTH/4, WINDOW_HEIGHT/4, WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2};
         SDL_SetRenderDrawColor(g_renderer, 0xff, 0x00, 0x00, 0xff);
         SDL_RenderFillRect(g_renderer, &inner_rect);
@@ -114,6 +124,19 @@ void run(SDL_Window* &window) {
         for (int i = 0; i <= WINDOW_HEIGHT; i+=4) {
             SDL_RenderDrawPoint(g_renderer, WINDOW_WIDTH / 2, i);
         }
+
+        // viewport to draw the geometry only on the top left corner of the window
+        SDL_Rect left_viewport;
+        left_viewport.x = 0;
+        left_viewport.y = 0;
+        left_viewport.w = WINDOW_WIDTH / 4;
+        left_viewport.h = WINDOW_HEIGHT / 4;
+
+        SDL_RenderSetViewport(g_renderer, &left_viewport);
+
+        SDL_SetRenderDrawColor(g_renderer, 0x00, 0xff, 0xff, 0xff);
+        SDL_Rect rect_on_viewport = {0, 0, WINDOW_WIDTH, WINDOW_HEIGHT};
+        SDL_RenderFillRect(g_renderer, &rect_on_viewport);
 
         SDL_RenderPresent(g_renderer);
     }
