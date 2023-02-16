@@ -14,34 +14,37 @@
 #include <string>
 #include <Texture.h>
 
+
 using namespace texture;
 
 bool init(SDL_Window* &window);         // init sdl and create window
-void quit(SDL_Window* &window, Texture &actorTexture, Texture &backgroundTexture);         // quit sdl and free memory
-void run(SDL_Window* &window, Texture &actorTexture, Texture &backgroundTexture);          // execute application: render frames and handle input
-bool loadMedia(Texture &actorTexture, Texture &backgroundTexture);
+void quit(SDL_Window* &window, Texture &actor_texture, Texture &background_texture);         // quit sdl and free memory
+void run(SDL_Window* &window, Texture &actor_texture, Texture &background_texture);          // execute application: render frames and handle input
+bool load_media(Texture &actor_texture, Texture &background_texture);
 
 const int WINDOW_HEIGHT = 600;
 const int WINDOW_WIDTH = 800;
 
-SDL_Renderer* gRenderer = NULL;
+SDL_Renderer* g_renderer = NULL;
 
 int main (int argc, char* args[]) {
     SDL_Window* window = NULL;                                  // sdl window
-    Texture actorTexture (gRenderer);
-    Texture backgroundTexture (gRenderer);
+    Texture actor_texture;
+    Texture background_texture;
 
     if (!init(window)) {
         printf("there was an error while initializing sdl: %s \n", SDL_GetError());
         return 1;
     }
 
-    if (!loadMedia(actorTexture, backgroundTexture)) {
+    printf("renderer: %s \n", (g_renderer == NULL) ? "is null":"not null");
+
+    if (!load_media(actor_texture, background_texture)) {
         return 1;
     }
 
-    run(window, actorTexture, backgroundTexture);
-    quit(window, actorTexture, backgroundTexture);
+    run(window, actor_texture, background_texture);
+    quit(window, actor_texture, background_texture);
 
     return 0;
 }
@@ -67,14 +70,14 @@ bool init(SDL_Window* &window) {
     }
 
     // renderer to render texture with the gpu intead of the cpu
-    gRenderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-    if (gRenderer == NULL) {
+    g_renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    if (g_renderer == NULL) {
         printf("Error initializing renderer: %s\n", SDL_GetError());
         return false;
     }
 
     // render set default render color to white
-    SDL_SetRenderDrawColor(gRenderer, 0xff, 0xff, 0xff, 0xff);
+    SDL_SetRenderDrawColor(g_renderer, 0xff, 0xff, 0xff, 0xff);
 
     // init img_sdl_png library so we can load png images
     int img_flags = IMG_INIT_PNG;
@@ -86,18 +89,18 @@ bool init(SDL_Window* &window) {
     return true;
 }
 
-void quit(SDL_Window* &window, Texture &actorTexture, Texture &backgroundTexture) {
-    SDL_DestroyRenderer(gRenderer);
+void quit(SDL_Window* &window, Texture &actor_texture, Texture &background_texture) {
+    SDL_DestroyRenderer(g_renderer);
     SDL_DestroyWindow(window);
 
-    gRenderer = NULL;
+    g_renderer = NULL;
     window = NULL;
 
     IMG_Quit();
     SDL_Quit();
 }
 
-void run(SDL_Window* &window, Texture &actorTexture, Texture &backgroundTexture) {
+void run(SDL_Window* &window, Texture &actor_texture, Texture &background_texture) {
     bool quit = false;
     SDL_Event event;
 
@@ -110,26 +113,26 @@ void run(SDL_Window* &window, Texture &actorTexture, Texture &backgroundTexture)
             }
         }
 
-        SDL_SetRenderDrawColor(gRenderer, 0xff, 0xff, 0xff, 0xff);
-        SDL_RenderClear(gRenderer);
+        SDL_SetRenderDrawColor(g_renderer, 0xff, 0xff, 0xff, 0xff);
+        SDL_RenderClear(g_renderer);
 
-        actorTexture.render(240, 950);
-        backgroundTexture.render(0, 0);
+        background_texture.render(0, 0, g_renderer);
+        actor_texture.render(240, 190, g_renderer);
 
-        SDL_RenderPresent(gRenderer);
+        SDL_RenderPresent(g_renderer);
     }
 }
 
-bool loadMedia(Texture &actorTexture, Texture &backgroundTexture) {
+bool load_media(Texture &actor_texture, Texture &background_texture) {
     // load media to texture classes
     bool success = true;
 
-    if (!actorTexture.loadFromPath("./textures/foo.png")) {
+    if (!actor_texture.load_from_path("./textures/foo.png", g_renderer)) {
         printf("Failed to load actor image! \n");
         success = false;
     }
 
-    if (!backgroundTexture.loadFromPath("./textures/background.png")) {
+    if (!background_texture.load_from_path("./textures/background.png", g_renderer)) {
         printf("Failed to load background image! \n");
         success = false;
     }

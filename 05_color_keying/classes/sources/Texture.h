@@ -8,17 +8,18 @@
 namespace texture {
     class Texture {
         private:
+        SDL_Renderer* mRenderer;
         SDL_Texture* m_texture;
         int m_heigth;
         int m_width;
 
         public:
-        Texture();
+        Texture(SDL_Renderer* &renderer);
         ~Texture();
 
-        bool load_from_path(std::string path, SDL_Renderer* renderer);
-        void render(int x, int y, SDL_Renderer* renderer);
+        bool loadFromPath(std::string path);
         void free();
+        void render(int x, int y);
 
         int get_heigth();
         int get_witdh();

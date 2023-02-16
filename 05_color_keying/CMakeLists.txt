@@ -9,7 +9,7 @@ include_directories(
     ${PROJECT_BINARY_DIR}
     ${deps_inc}
     ${PROJECT_SOURCE_DIR}
-    .
+    "."
 )
 
 
@@ -21,6 +21,6 @@ add_executable(main ${PROJECT_SOURCE_DIR}/main.cpp)
 link_libraries(main PRIVATE "/opt/homebrew/lib/")
 target_link_libraries(main SDL2 SDL2_image)
 
-target_include_directories(main PRIVATE classes/Texture)
+target_include_directories(main PRIVATE libs/Texture)
 
 target_link_libraries(main Texture)
