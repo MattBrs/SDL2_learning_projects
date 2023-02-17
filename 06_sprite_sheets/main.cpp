@@ -2,6 +2,7 @@
 #include "SDL2/SDL.h"
 #include "SDL2/SDL_error.h"
 #include "SDL2/SDL_events.h"
+#include "SDL2/SDL_keycode.h"
 #include "SDL2/SDL_rect.h"
 #include "SDL2/SDL_render.h"
 #include "SDL2/SDL_surface.h"
@@ -103,19 +104,47 @@ void run(SDL_Window* &window, Texture &sprite_sheet_texture, SDL_Rect sprite_cli
     bool quit = false;
     SDL_Event event;
 
+    Uint8 red = 0;
+    Uint8 green = 0;
+    Uint8 blue = 0;
+
     // avoid window closure when application start
     while (!quit) {
         while (SDL_PollEvent(&event) != 0) {
             // listen to quit event to close window when necessary
             if (event.type == SDL_QUIT) {
                 quit = true;
+            } else if (event.type == SDL_KEYDOWN) {
+                // key mapping to change color grading with keypresses
+                switch (event.key.keysym.sym) {
+                    case SDLK_q:
+                        red += 32;
+                        break;
+                    case SDLK_w:
+                        green += 32;
+                        break;
+                    case SDLK_e:
+                        blue += 32;
+                        break;
+                    case SDLK_a:
+                        red -= 32;
+                        break;
+                    case SDLK_s:
+                        green -= 32;
+                        break;
+                    case SDLK_d:
+                        blue -= 32;
+                        break;
+
+                }
             }
         }
 
         SDL_SetRenderDrawColor(g_renderer, 0xff, 0xff, 0xff, 0xff);
         SDL_RenderClear(g_renderer);
 
-        
+        sprite_sheet_texture.setColor(red, green, blue);
+
         sprite_sheet_texture.render(
             0, 
             0, 

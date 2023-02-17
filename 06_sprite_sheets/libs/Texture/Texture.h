@@ -19,6 +19,7 @@ namespace texture {
 
         bool load_from_path(std::string path, SDL_Renderer* renderer);
         void render(int x, int y, SDL_Renderer* renderer, SDL_Rect* clip = NULL);
+        void setColor(Uint8 red, Uint8 green, Uint8 blue);
         void free();
 
         int get_heigth();
