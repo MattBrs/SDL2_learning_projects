@@ -1,5 +1,6 @@
 #include "SDL2/SDL_image.h"
 #include "SDL2/SDL.h"
+#include "SDL2/SDL_blendmode.h"
 #include "SDL2/SDL_error.h"
 #include "SDL2/SDL_events.h"
 #include "SDL2/SDL_keycode.h"
@@ -107,6 +108,7 @@ void run(SDL_Window* &window, Texture &sprite_sheet_texture, SDL_Rect sprite_cli
     Uint8 red = 0;
     Uint8 green = 0;
     Uint8 blue = 0;
+    Uint8 alpha = 255;
 
     // avoid window closure when application start
     while (!quit) {
@@ -135,7 +137,12 @@ void run(SDL_Window* &window, Texture &sprite_sheet_texture, SDL_Rect sprite_cli
                     case SDLK_d:
                         blue -= 32;
                         break;
-
+                    case SDLK_UP:
+                        alpha += 10;
+                        break;
+                    case SDLK_DOWN:
+                        alpha -= 10;
+                        break;
                 }
             }
         }
@@ -143,7 +150,8 @@ void run(SDL_Window* &window, Texture &sprite_sheet_texture, SDL_Rect sprite_cli
         SDL_SetRenderDrawColor(g_renderer, 0xff, 0xff, 0xff, 0xff);
         SDL_RenderClear(g_renderer);
 
-        sprite_sheet_texture.setColor(red, green, blue);
+        sprite_sheet_texture.set_color(red, green, blue);
+        sprite_sheet_texture.set_alpha(alpha);
 
         sprite_sheet_texture.render(
             0, 
@@ -184,6 +192,8 @@ bool load_media(Texture &sprite_sheet_texture, SDL_Rect sprite_clips[]) {
         printf("Failed to load dots image! \n");
         return false;
     }
+
+    sprite_sheet_texture.set_blend_mode(SDL_BLENDMODE_BLEND);
 
     sprite_clips[0].x = 0;
     sprite_clips[0].y = 0;

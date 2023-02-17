@@ -74,9 +74,17 @@ void Texture::render(int x, int y, SDL_Renderer* renderer, SDL_Rect* clip) {
     SDL_RenderCopy(renderer, m_texture, clip, &renderQuad);
 }
 
-void Texture::setColor(Uint8 red, Uint8 green, Uint8 blue) {
+void Texture::set_color(Uint8 red, Uint8 green, Uint8 blue) {
     // morph the base colors of the texture
     SDL_SetTextureColorMod(m_texture, red, green, blue);
+}
+
+void Texture::set_blend_mode(SDL_BlendMode blending) {
+    SDL_SetTextureBlendMode(m_texture, blending);
+}
+
+void Texture::set_alpha(Uint8 alpha) {
+    SDL_SetTextureAlphaMod(m_texture, alpha);
 }
 
 int Texture::get_witdh() {
