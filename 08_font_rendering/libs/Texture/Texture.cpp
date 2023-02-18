@@ -1,4 +1,5 @@
 #include "Texture.hpp"
+#include "SDL2/SDL_ttf.h"
 #include "SDL2/SDL_error.h"
 #include "SDL2/SDL_image.h"
 #include "SDL2/SDL_pixels.h"
@@ -6,6 +7,7 @@
 #include "SDL2/SDL_render.h"
 #include "SDL2/SDL_stdinc.h"
 #include "SDL2/SDL_surface.h"
+#include "SDL2/SDL_ttf.h"
 #include <cstdio>
 
 using namespace texture;
@@ -80,6 +82,28 @@ void Texture::render(
     // we set "clip" as the third parameter to specify the src_quad
     // which means the specific portion of the texture we want to render
     SDL_RenderCopyEx(renderer, m_texture, clip, &renderQuad, angle, center, flip);
+}
+
+bool Texture::load_from_rendered_text(TTF_Font* font, std::string texture_text, SDL_Color text_color, SDL_Renderer* renderer) {
+    free();
+    SDL_Surface* text_surface = TTF_RenderText_Solid(font, texture_text.c_str(), text_color);
+
+    if (text_surface == NULL) {
+        printf("Unable to create text surface: %s \n", TTF_GetError());
+        return false;
+    }
+
+    m_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
+    if (m_texture == NULL) {
+        printf("Unable to load texture from surface  %s\n", SDL_GetError());
+        SDL_FreeSurface(text_surface);
+        return false;
+    }
+
+    m_width = text_surface->w;
+    m_heigth = text_surface->h;
+    SDL_FreeSurface(text_surface);
+    return true;
 }
 
 void Texture::set_color(Uint8 red, Uint8 green, Uint8 blue) {

@@ -1,4 +1,7 @@
 #include "SDL2/SDL_image.h"
+#include "SDL2/SDL_image.h"
+#include "SDL2/SDL_ttf.h"
+#include "SDL2/SDL_pixels.h"
 #include "SDL2/SDL.h"
 #include "SDL2/SDL_blendmode.h"
 #include "SDL2/SDL_error.h"
@@ -16,13 +19,12 @@
 #include <string>
 #include <Texture.hpp>
 
-
 using namespace texture;
 
 bool init(SDL_Window* &window);                                                         // init sdl and create window
-void quit(SDL_Window* &window, Texture &sprite_sheet_texture);                          // quit sdl and free memory
-void run(SDL_Window* &window, Texture &sprite_sheet_texture, SDL_Rect sprite_clips[]);  // execute application: render frames and handle input
-bool load_media(Texture &sprite_sheet_texture, SDL_Rect sprite_clips[]);
+void quit(SDL_Window* &window, Texture &text_texture, TTF_Font* font);                          // quit sdl and free memory
+void run(SDL_Window* &window, Texture &text_texture, TTF_Font* font);  // execute application: render frames and handle input
+bool load_media(Texture &sprite_sheet_texture, TTF_Font* font);
 
 const int WINDOW_HEIGHT = 600;
 const int WINDOW_WIDTH = 800;
@@ -32,20 +34,20 @@ SDL_Renderer* g_renderer = NULL;
 
 int main (int argc, char* args[]) {
     SDL_Window* window = NULL;                                  // sdl window
-    SDL_Rect sprite_clips[ANIMATION_FRAME_COUNT];
-    Texture sprite_sheet_texture;
+    Texture text_texture;
+    TTF_Font* font = NULL;
 
     if (!init(window)) {
         printf("there was an error while initializing sdl: %s \n", SDL_GetError());
         return 1;
     }
 
-    if (!load_media(sprite_sheet_texture, sprite_clips)) {
+    if (!load_media(text_texture, font)) {
         return 1;
     }
 
-    run(window, sprite_sheet_texture, sprite_clips);
-    quit(window, sprite_sheet_texture);
+    run(window, text_texture, font);
+    quit(window, text_texture, font);
 
     return 0;
 }
@@ -87,22 +89,30 @@ bool init(SDL_Window* &window) {
         return false;
     }
 
+    if (TTF_Init() == -1) {
+        printf("Error initializing ttf: %s\n", TTF_GetError());
+        return false;
+    }
+
     return true;
 }
 
-void quit(SDL_Window* &window, Texture &sprite_sheet_texture) {
+void quit(SDL_Window* &window, Texture &text_texture, TTF_Font* font) {
+    TTF_CloseFont(font);
     SDL_DestroyRenderer(g_renderer);
     SDL_DestroyWindow(window);
-    sprite_sheet_texture.free();
+    text_texture.free();
 
     g_renderer = NULL;
     window = NULL;
+    font = NULL;
 
+    TTF_Quit();
     IMG_Quit();
     SDL_Quit();
 }
 
-void run(SDL_Window* &window, Texture &sprite_sheet_texture, SDL_Rect sprite_clips[]) {
+void run(SDL_Window* &window, Texture &text_texture, TTF_Font* font) {
     bool quit = false;
     SDL_Event event;
 
@@ -130,56 +140,36 @@ void run(SDL_Window* &window, Texture &sprite_sheet_texture, SDL_Rect sprite_cli
         SDL_SetRenderDrawColor(g_renderer, 0xff, 0xff, 0xff, 0xff);
         SDL_RenderClear(g_renderer);
 
-        // we do current_frame / 6 to have more animation frames per render frame
-        sprite_sheet_texture.render(
-            (WINDOW_WIDTH - sprite_clips[current_frame / 6].w) / 2, 
-            (WINDOW_HEIGHT - sprite_clips[current_frame / 6].h) / 2, 
-            g_renderer, 
-            &sprite_clips[current_frame / 6],
-            angle, 
-            NULL,
-            flip
+        text_texture.render(
+            (WINDOW_WIDTH - text_texture.get_witdh()) / 2, 
+            (WINDOW_HEIGHT - text_texture.get_heigth()) / 2, 
+            g_renderer
         );
-
-        ++current_frame;
-
-        if (current_frame / 6 >= ANIMATION_FRAME_COUNT) {
-            current_frame = 0;
-        }
 
         SDL_RenderPresent(g_renderer);
     }
 }
 
-bool load_media(Texture &sprite_sheet_texture, SDL_Rect sprite_clips[]) {
+bool load_media(Texture &font_texture,TTF_Font* font) {
     // load media to texture classes
-
-    if (!sprite_sheet_texture.load_from_path("./textures/foo.png", g_renderer)) {
-        printf("Failed to load dots image! \n");
+    font = TTF_OpenFont("textures/lazy.ttf", 28);
+    if (font == NULL) {
+        printf("Error loading font: %s\n", TTF_GetError());
         return false;
     }
 
-    sprite_sheet_texture.set_blend_mode(SDL_BLENDMODE_BLEND);
+    // set all 0 to render black color
+    SDL_Color color = {0, 0, 0};
 
-    sprite_clips[0].x = 0;
-    sprite_clips[0].y = 0;
-    sprite_clips[0].w = 64;
-    sprite_clips[0].h = 205;
-
-    sprite_clips[1].x = 64;
-    sprite_clips[1].y = 0;
-    sprite_clips[1].w = 64;
-    sprite_clips[1].h = 205;
-
-    sprite_clips[2].x = 128;
-    sprite_clips[2].y = 0;
-    sprite_clips[2].w = 64;
-    sprite_clips[2].h = 205;
-
-    sprite_clips[3].x = 192;
-    sprite_clips[3].y = 0;
-    sprite_clips[3].w = 64;
-    sprite_clips[3].h = 205;
+    if (!font_texture.load_from_rendered_text(
+        font, 
+        "This is a test text of a silly font made by lazyfoo!", 
+        color, 
+        g_renderer)
+    ) {
+        printf("Error render font_texture\n");
+        return false;
+    }
 
     return true;
 }
