@@ -2,8 +2,10 @@
 #include "SDL2/SDL_error.h"
 #include "SDL2/SDL_image.h"
 #include "SDL2/SDL_events.h"
+#include "SDL2/SDL_keyboard.h"
 #include "SDL2/SDL_rect.h"
 #include "SDL2/SDL_render.h"
+#include "SDL2/SDL_scancode.h"
 #include "SDL2/SDL_video.h"
 #include "Texture.hpp"
 #include <SDL2/SDL.h>
@@ -122,6 +124,7 @@ bool load_media(Texture &texture, SDL_Rect texture_clips[], Button buttons[]) {
 
 void run(Texture &texture, Button buttons[], SDL_Rect texture_clips[]) {
     bool quit = false;
+    bool render_buttons = true;
     SDL_Event event;
 
     while (!quit) {
@@ -135,12 +138,29 @@ void run(Texture &texture, Button buttons[], SDL_Rect texture_clips[]) {
             }
         }
         
+        const Uint8* key_states = SDL_GetKeyboardState(NULL); 
+
+        if (key_states[SDL_SCANCODE_UP]) {
+            render_buttons = false;
+        }
+
+        if (key_states[SDL_SCANCODE_DOWN]) {
+            render_buttons = true;
+        }
+
         SDL_SetRenderDrawColor(g_renderer, 0xff, 0xff, 0xff, 0xff);
         SDL_RenderClear(g_renderer);
         
-        for (int i = 0; i < BUTTON_COUNT; ++i) {
-            buttons[i].render(g_renderer, texture);
+        if (render_buttons) {
+            for (int i = 0; i < BUTTON_COUNT; ++i) {
+                buttons[i].render(g_renderer, texture);
+            }
+        } else {
+            SDL_SetRenderDrawColor(g_renderer, 0xff, 0x00, 0x00, 0xff);
+            SDL_RenderDrawLine(g_renderer, WINDOW_WIDTH / 8, WINDOW_HEIGHT / 2, WINDOW_WIDTH * 7/8, WINDOW_HEIGHT / 2);
+            SDL_RenderDrawLine(g_renderer, WINDOW_WIDTH / 2, WINDOW_HEIGHT * 1/5, WINDOW_WIDTH / 2, WINDOW_HEIGHT * 4/5);
         }
+
 
         SDL_RenderPresent(g_renderer);
         
