@@ -168,6 +168,7 @@ void quit(
 
     texture.free();
 
+    Mix_Quit();
     IMG_Quit();
     SDL_Quit();
 }
