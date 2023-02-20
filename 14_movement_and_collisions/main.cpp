@@ -32,27 +32,23 @@ const int TICKS_PER_FRAME = 1000/ FRAME_CAP;
 SDL_Renderer* g_renderer = NULL;
 
 bool init(SDL_Window* &window);
-void run(Texture &timer_texture, TTF_Font* &font);
-void quit(SDL_Window* &window, Texture &timer_texture, TTF_Font* &font);
-bool load_media(TTF_Font* &font);
+void run();
+void quit(SDL_Window* &window);
+bool load_media();
 
 int main(int argc, char* args[]) {
     SDL_Window* window;
-    Texture info_1_texture;
-    Texture info_2_texture;
-    Texture timer_texture;
-    TTF_Font* font = NULL;
 
     if (!init(window)) {
         return 1;
     }
 
-    if (!load_media(font)) {
+    if (!load_media()) {
         return 1;
     }
 
-    run( timer_texture, font);
-    quit(window, timer_texture, font);
+    run();
+    quit(window);
     return 0;
 }
 
@@ -100,87 +96,36 @@ bool init(SDL_Window* &window) {
     return true;
 }
 
-void quit(
-    SDL_Window* &window, 
-    Texture &timer_texture, 
-    TTF_Font* &font
-) {
-    TTF_CloseFont(font);
-    font = NULL;
-
+void quit(SDL_Window* &window) {
     SDL_DestroyRenderer(g_renderer);
     g_renderer = NULL;
 
     SDL_DestroyWindow(window);
     window = NULL;
 
-    timer_texture.free();
-
-    TTF_Quit();
+    TTF_Init();
     IMG_Quit();
     SDL_Quit();
 }
 
-bool load_media(TTF_Font* &font) {
-    font = TTF_OpenFont("fonts/lazy.ttf", 28);
-    if (font == NULL) {
-        printf("Error loading font: %s\n", TTF_GetError());
-        return false;
-    }
-
+bool load_media() {
     return true;
 }
 
-void run(Texture &frame_counter_texture, TTF_Font* &font) {
+void run() {
     bool quit = false;
     SDL_Event event;
 
-    SDL_Color text_color = {0, 0, 0, 255};
-    std::stringstream timer_text;
-
-    Timer frame_counter;
-    frame_counter.start();
-    int counted_frames = 0;
-
-    Timer frame_cap;
-
     while (!quit) {
-        frame_cap.start();
         while (SDL_PollEvent(&event) != 0) {
             if (event.type == SDL_QUIT) {
                 quit = true;
             }
         }
 
-        float avg_fps = counted_frames / (frame_counter.get_ticks() / 1000.f);
-
-        timer_text.str("");
-        timer_text << avg_fps << "FPS";
-        if (!frame_counter_texture.load_from_rendered_text(
-            font, 
-            timer_text.str(), 
-            text_color, 
-            g_renderer)
-        ) {
-            printf("Error rendering text!\n");
-        }
-
-
         SDL_SetRenderDrawColor(g_renderer, 0xff, 0xff, 0xff, 0xff);
         SDL_RenderClear(g_renderer);
 
-        frame_counter_texture.render(
-            (WINDOW_WIDTH - frame_counter_texture.get_witdh()) / 2, 
-            (WINDOW_HEIGHT - frame_counter_texture.get_heigth()) / 2, 
-            g_renderer
-        );
-
         SDL_RenderPresent(g_renderer);
-        ++counted_frames;
-
-        Uint32 frame_ticks = frame_cap.get_ticks();
-        if (frame_ticks < TICKS_PER_FRAME) {
-            SDL_Delay(TICKS_PER_FRAME - frame_ticks);
-        }
     }
 }
