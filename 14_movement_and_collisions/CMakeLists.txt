@@ -4,6 +4,7 @@ set(CMAKE_CXX_STANDARD 17)
 add_subdirectory(libs/Texture)
 add_subdirectory(libs/Button)
 add_subdirectory(libs/Timer)
+add_subdirectory(libs/Dot)
 
 SET (deps_inc "/opt/homebrew/include/")
 
@@ -29,5 +30,6 @@ target_link_libraries(main SDL2 SDL2_image SDL2_ttf SDL2_mixer)
 target_include_directories(main PRIVATE libs/Texture)
 target_include_directories(main PRIVATE libs/Button)
 target_include_directories(main PRIVATE libs/Timer)
+target_include_directories(main PRIVATE libs/Dot)
 
-target_link_libraries(main Texture Button Timer)
+target_link_libraries(main Texture Button Timer Dot)

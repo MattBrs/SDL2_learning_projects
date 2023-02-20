@@ -53,7 +53,6 @@ int main(int argc, char* args[]) {
 }
 
 bool init(SDL_Window* &window) {
-
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         printf("Error initializing sdl: %s\n", SDL_GetError());
         return false;
