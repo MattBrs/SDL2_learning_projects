@@ -31,5 +31,6 @@ target_include_directories(main PRIVATE libs/Texture)
 target_include_directories(main PRIVATE libs/Button)
 target_include_directories(main PRIVATE libs/Timer)
 target_include_directories(main PRIVATE libs/Dot)
+target_include_directories(main PRIVATE libs/Constants)
 
 target_link_libraries(main Texture Button Timer Dot)
