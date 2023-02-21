@@ -21,6 +21,7 @@
 #include <cstdio>
 #include <sstream>
 #include <stdio.h>
+#include <vector>
 #include "Constants.hpp"
 #include "Dot.hpp"
 
@@ -128,6 +129,10 @@ void run(Dot &player) {
     bool quit = false;
     SDL_Event event;
 
+    Dot other_dot (WINDOW_WIDTH / 3, WINDOW_HEIGHT / 3);
+
+    load_media(other_dot);
+
     while (!quit) {
         while (SDL_PollEvent(&event) != 0) {
             if (event.type == SDL_QUIT) {
@@ -137,12 +142,13 @@ void run(Dot &player) {
             player.handle_event(event);
         }
 
-        player.move();
+        player.move(other_dot.get_colliders());
 
-        SDL_SetRenderDrawColor(g_renderer, 0xff, 0xff, 0xff, 0xff);
+        SDL_SetRenderDrawColor(g_renderer, 0xff, 0x00, 0x00, 0xff);
         SDL_RenderClear(g_renderer);
 
         player.render(g_renderer);
+        other_dot.render(g_renderer);
 
         SDL_RenderPresent(g_renderer);
     }

@@ -5,6 +5,7 @@ add_subdirectory(libs/Texture)
 add_subdirectory(libs/Button)
 add_subdirectory(libs/Timer)
 add_subdirectory(libs/Dot)
+add_subdirectory(libs/Utils)
 
 SET (deps_inc "/opt/homebrew/include/")
 
@@ -32,5 +33,6 @@ target_include_directories(main PRIVATE libs/Button)
 target_include_directories(main PRIVATE libs/Timer)
 target_include_directories(main PRIVATE libs/Dot)
 target_include_directories(main PRIVATE libs/Constants)
+target_include_directories(main PRIVATE libs/Utils)
 
-target_link_libraries(main Texture Button Timer Dot)
+target_link_libraries(main Texture Button Timer Dot Utils)

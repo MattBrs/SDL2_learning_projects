@@ -42,7 +42,12 @@ bool Texture::load_from_path(std::string path, SDL_Renderer* renderer) {
     }
 
     // define which color will be treated as trasparent (setColorKey) to handle image transparency
-    SDL_SetColorKey(loadedSurface, SDL_TRUE, SDL_MapRGB(loadedSurface->format, 0x00, 0xff, 0xff));
+    SDL_SetColorKey(
+        loadedSurface, 
+        SDL_TRUE, 
+        SDL_MapRGB(loadedSurface->format, 0xff, 0xff, 0xff)
+    );
+
     newTexture = SDL_CreateTextureFromSurface(renderer, loadedSurface);
     
     if (newTexture == NULL) {   
