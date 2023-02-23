@@ -6,10 +6,10 @@ bool collisions::check_collision(
 	std::vector<SDL_Rect> &box_colliders_2
 ) {
 	// variables to represent each side of the box colliders
-	int left_1, left_2;
-	int right_1, right_2;
-	int top_1, top_2;
-	int bottom_1, bottom_2;
+	float left_1, left_2;
+	float right_1, right_2;
+	float top_1, top_2;
+	float bottom_1, bottom_2;
 
 	// analyze first box collider
 	for (const auto &box_1: box_colliders_1) {
@@ -44,7 +44,7 @@ bool collisions::check_collision(
 		shapes::Circle &circle_collider, 
 		shapes::Circle &other_circle
 ) {
-	int total_radius_squared = circle_collider.radius + other_circle.radius;
+	float total_radius_squared = circle_collider.radius + other_circle.radius;
 	total_radius_squared *= total_radius_squared;
 
 	if (distance_squared(
@@ -64,8 +64,8 @@ bool collisions::check_collision(
 		shapes::Circle &circle_collider,
 		SDL_Rect &rect_collider
 ) {
-	int closest_x;
-	int closest_y;
+	float closest_x;
+	float closest_y;
 
 	if (circle_collider.pos_x < rect_collider.x) {
 		closest_x = rect_collider.x;
@@ -95,9 +95,9 @@ bool collisions::check_collision(
 	return false;
 }
 
-double collisions::distance_squared(int x1, int y1, int x2, int y2) {
-	int delta_x = x2 - x1;
-	int delta_y = y2 - y1;
+double collisions::distance_squared(float x1, float y1, float x2, float y2) {
+	float delta_x = x2 - x1;
+	float delta_y = y2 - y1;
 
 	return (delta_x * delta_x) + (delta_y * delta_y);
 }

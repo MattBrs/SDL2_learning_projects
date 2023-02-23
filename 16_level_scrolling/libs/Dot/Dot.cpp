@@ -53,26 +53,31 @@ void Dot::handle_event(SDL_Event &event) {
 	}
 }
 
-void Dot::move(shapes::Circle &other_collider) {
+void Dot::move(
+	shapes::Circle &other_collider, 
+	float time_step
+) {
 	// after we move the dot (both the first time or when we return
 	// to previous position because of conditions), we move the colliders
-	m_pos_x += m_vel_x;
+	float movement_x = m_vel_x * time_step;
+	m_pos_x += movement_x;
 	shift_colliders();
 
 	
 	if (m_pos_x < 0 || m_pos_x > constants::LEVEL_WIDTH - DOT_WIDTH) {
-		m_pos_x -= m_vel_x;
+		m_pos_x -= movement_x;
 		shift_colliders();
 	}
 
 	if (
 		collisions::check_collision(m_collider, other_collider) 
 	) {
-		m_pos_x -= m_vel_x;
+		m_pos_x -= movement_x;
 		shift_colliders();
 	}
 
-	m_pos_y += m_vel_y;
+	float movement_y = m_vel_y * time_step;
+	m_pos_y += movement_y;
 	shift_colliders();
 	
 	if (
@@ -80,15 +85,15 @@ void Dot::move(shapes::Circle &other_collider) {
 		|| m_pos_y > constants::LEVEL_HEIGHT - DOT_HEIGHT
 		|| collisions::check_collision(m_collider, other_collider)
 	) {
-		m_pos_y -= m_vel_y;
+		m_pos_y -= movement_y;
 		shift_colliders();
 	}
 	
 }
 
 void Dot::shift_colliders() {
-	m_collider.pos_x = m_pos_x + (DOT_WIDTH / 2);
-	m_collider.pos_y = m_pos_y + (DOT_HEIGHT / 2);
+	m_collider.pos_x = m_pos_x + ((float)DOT_WIDTH / 2);
+	m_collider.pos_y = m_pos_y + ((float)DOT_HEIGHT / 2);
 }
 
 void Dot::render(
@@ -97,8 +102,8 @@ void Dot::render(
 	int &camera_pos_y
 ) {
 	m_dot_texture.render(
-		m_pos_x - camera_pos_x, 
-		m_pos_y - camera_pos_y, 
+		(int)m_pos_x - (int)camera_pos_x, 
+		(int)m_pos_y - (int)camera_pos_y, 
 		renderer
 	);
 }

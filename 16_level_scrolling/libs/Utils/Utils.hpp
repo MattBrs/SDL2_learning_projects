@@ -5,9 +5,9 @@
 
 namespace shapes {
 	struct Circle {
-		int pos_x;
-		int pos_y;
-		int radius;
+		float pos_x;
+		float pos_y;
+		float radius;
 	};
 }
 
@@ -24,6 +24,6 @@ namespace collisions {
 		shapes::Circle &circle_collider,
 		SDL_Rect &rect_collider
 	);
-	double distance_squared(int x1, int y1, int x2, int y2);
+	double distance_squared(float x1, float y1, float x2, float y2);
 }
 

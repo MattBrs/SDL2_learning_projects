@@ -142,6 +142,8 @@ void run(Dot &player, Texture &background_texture, Dot &other_dot) {
 
     SDL_Rect camera = {0, 0, WINDOW_WIDTH, WINDOW_HEIGHT};
 
+    Timer frame_cap;
+
     while (!quit) {
         while (SDL_PollEvent(&event) != 0) {
             if (event.type == SDL_QUIT) {
@@ -152,13 +154,15 @@ void run(Dot &player, Texture &background_texture, Dot &other_dot) {
         }
 
 
-
-        player.move(other_dot.get_collider());
+        double time_step = frame_cap.get_ticks() / 1000.f;
+        player.move(other_dot.get_collider(), time_step);
 
         camera.x = 
             (player.get_pos_x() + Dot::DOT_WIDTH / 2) - WINDOW_WIDTH / 2;
         camera.y = 
             (player.get_pos_y() + Dot::DOT_HEIGHT / 2) - WINDOW_HEIGHT / 2;
+
+        frame_cap.start();
 
         if (camera.x < 0) {
             camera.x = 0;

@@ -14,14 +14,17 @@ class Dot {
 public:
 	static const int DOT_WIDTH = 20;
 	static const int DOT_HEIGHT = 20;
-	const int DOT_MAX_VEL = 4;
+	const int DOT_MAX_VEL = 200;
 
 	Dot();
 	Dot(int start_pos_x, int start_pos_y);
 	~Dot();
 
 	void handle_event(SDL_Event &event);
-	void move(shapes::Circle &other_collider);
+	void move(
+		shapes::Circle &other_collider, 
+		float time_step
+	);
 	void render(
 		SDL_Renderer* renderer,
 		int &camera_pos_x, 
@@ -34,11 +37,11 @@ public:
 	int get_pos_x();
 	int get_pos_y();
 private:
-	int m_pos_x;
-	int m_pos_y;
+	float m_pos_x;
+	float m_pos_y;
 
-	int m_vel_x;
-	int m_vel_y;
+	float m_vel_x;
+	float m_vel_y;
 
 	texture::Texture m_dot_texture;
 	shapes::Circle m_collider;
