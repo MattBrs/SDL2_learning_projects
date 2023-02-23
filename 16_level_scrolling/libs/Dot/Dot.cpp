@@ -65,7 +65,8 @@ void Dot::move(
 
 	
 	if (m_pos_x < 0 || m_pos_x > constants::LEVEL_WIDTH - DOT_WIDTH) {
-		m_pos_x -= movement_x;
+		m_pos_x = m_pos_x < 0 ? 0 : constants::LEVEL_WIDTH - DOT_WIDTH;
+		// m_pos_x -= movement_x;
 		shift_colliders();
 	}
 
@@ -83,8 +84,12 @@ void Dot::move(
 	if (
 		m_pos_y < 0 
 		|| m_pos_y > constants::LEVEL_HEIGHT - DOT_HEIGHT
-		|| collisions::check_collision(m_collider, other_collider)
 	) {
+		m_pos_y = m_pos_y < 0 ? 0 : constants::LEVEL_HEIGHT - DOT_HEIGHT;
+		shift_colliders();
+	}
+
+	if (collisions::check_collision(m_collider, other_collider)) {
 		m_pos_y -= movement_y;
 		shift_colliders();
 	}
@@ -131,4 +136,12 @@ int Dot::get_pos_x() {
 
 int Dot::get_pos_y() {
 	return m_pos_y;
+}
+
+void Dot::set_pos_x(const int &new_pos_x) {
+	m_pos_x = new_pos_x;
+}
+
+void Dot::set_pos_y(const int &new_pos_y) {
+	m_pos_y = new_pos_y;
 }

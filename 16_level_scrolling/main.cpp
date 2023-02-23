@@ -7,6 +7,7 @@
 #include "SDL2/SDL_pixels.h"
 #include "SDL2/SDL_rect.h"
 #include "SDL2/SDL_render.h"
+#include "SDL2/SDL_rwops.h"
 #include "SDL2/SDL_scancode.h"
 #include "SDL2/SDL_stdinc.h"
 #include "SDL2/SDL_surface.h"
@@ -18,9 +19,11 @@
 #include "libs/Timer/Timer.hpp"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <cstddef>
 #include <cstdio>
 #include <sstream>
 #include <stdio.h>
+#include <string>
 #include <vector>
 #include "Constants.hpp"
 #include "Dot.hpp"
@@ -38,6 +41,8 @@ bool init(SDL_Window* &window);
 void run(Dot &player, Texture &background_texture, Dot &other_dot);
 void quit(SDL_Window* &window);
 bool load_media(Dot &player, Texture &background_texture, Dot &other_dot);
+void save_to_file(Dot &player, std::string path);
+void read_from_file(Dot &player, std::string path);
 
 int main(int argc, char* args[]) {
     SDL_Window* window;
@@ -53,7 +58,10 @@ int main(int argc, char* args[]) {
         return 1;
     }
 
+    read_from_file(player, "player.bin");
+
     run(player, background_texture, other_dot);
+    save_to_file(player, "player.bin");
     quit(window);
     return 0;
 }
@@ -189,4 +197,37 @@ void run(Dot &player, Texture &background_texture, Dot &other_dot) {
 
         SDL_RenderPresent(g_renderer);
     }
+}
+
+void save_to_file(Dot &player, std::string path) {
+    SDL_RWops* file = SDL_RWFromFile(path.c_str(), "r+b");
+
+    if (file == NULL) {
+        file = SDL_RWFromFile(path.c_str(), "w+b");
+
+        if (file == NULL) {
+            printf("Could not create file!  %s\n", SDL_GetError());
+            return;
+        }
+    }
+
+
+    SDL_RWwrite(file, &player, sizeof(player), 1);
+    SDL_RWclose(file);
+}
+
+void read_from_file(Dot &player, std::string path) {
+    SDL_RWops* file = SDL_RWFromFile(path.c_str(), "r+w");
+
+    if (file == NULL) {
+        printf("Cannot load %s,  %s\n", path.c_str(), SDL_GetError());
+        return;
+    }
+
+    Dot temp_player;
+    SDL_RWread(file, &temp_player, sizeof(player), 1);
+    SDL_RWclose(file);
+
+    player.set_pos_x(temp_player.get_pos_x());
+    player.set_pos_y(temp_player.get_pos_y());
 }

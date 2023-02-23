@@ -36,6 +36,8 @@ public:
 	shapes::Circle& get_collider();
 	int get_pos_x();
 	int get_pos_y();
+	void set_pos_x(const int &new_pos_x);
+	void set_pos_y(const int &new_pos_y);
 private:
 	float m_pos_x;
 	float m_pos_y;
