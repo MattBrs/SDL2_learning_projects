@@ -145,7 +145,11 @@ void Dot::render(
 	);
 
 	if (m_particle_system != NULL) {
-		m_particle_system->render(renderer, m_pos_x, m_pos_y);
+		m_particle_system->render(
+			renderer, 
+			(int)m_pos_x - (int)camera_pos_x, 
+			(int)m_pos_y - (int)camera_pos_y
+		);
 	}
 }
 

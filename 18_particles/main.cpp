@@ -159,9 +159,13 @@ bool load_media(ParticleSystem &particle_system, Dot &player) {
 void run(Dot &player) {
     bool quit = false;
     SDL_Event event;
-    int camera_pos_x = 0;
-    int camera_pos_y = 0;
 
+    SDL_Rect camera = {
+        player.get_pos_x(), 
+        player.get_pos_y(), 
+        g_window.get_window_width(), 
+        g_window.get_window_heigth()
+    };
 
     Timer delta_time;
     while (!quit) {
@@ -176,15 +180,42 @@ void run(Dot &player) {
 
         if (!g_window.is_minimized()) {
             player.move(delta_time.get_ticks() / 1000.f);
+            
+            camera.x = (player.get_pos_x() + Dot::DOT_WIDTH / 2)
+                - constants::WINDOW_WIDTH / 2;
+            camera.y = (player.get_pos_y() + Dot::DOT_HEIGHT / 2)
+                - constants::WINDOW_HEIGHT / 2;
+
+            delta_time.start();
+
+            if (camera.x < 0) {
+                camera.x = 0;
+            }
+
+            if (camera.x > constants::LEVEL_WIDTH - camera.w) {
+                camera.x = constants::LEVEL_WIDTH - camera.w;
+            }
+
+            if (camera.y < 0) {
+                camera.y = 0;
+            }
+
+            if (camera.y > constants::LEVEL_HEIGHT - camera.h) {
+                camera.y = constants::LEVEL_HEIGHT - camera.h;
+            }
+
+
             SDL_SetRenderDrawColor(g_renderer, 0xff, 0xff, 0xff, 0xff);
             SDL_RenderClear(g_renderer);
 
+            int temp_camera_x = 0;
+            int temp_camera_y = 0;
+
             player.render(
                 g_renderer, 
-                camera_pos_x, 
-                camera_pos_y
+                temp_camera_x, 
+                temp_camera_y
             ); 
-            delta_time.start();
 
             SDL_RenderPresent(g_renderer);            
         }
