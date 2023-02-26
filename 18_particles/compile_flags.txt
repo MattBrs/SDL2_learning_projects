@@ -1,0 +1,12 @@
+-std=c++20
+-Wall
+-I/opt/homebrew/include/
+-I./libs/Texture
+-I./libs/Button
+-I./libs/Dot
+-I./libs/Timer
+-I./libs/Constants
+-I./libs/Utils
+-I./libs/Window
+-I./libs/Particle
+-I./libs/ParticleSystem
