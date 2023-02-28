@@ -1,5 +1,6 @@
 #include "Particle.hpp"
 #include "Texture.hpp"
+#include <cstdio>
 #include <cstdlib>
 #include <iterator>
 #include <vector>
@@ -34,11 +35,23 @@ Particle::~Particle() {
 	// do nothing
 }
 
-void Particle::render(SDL_Renderer *renderer) {
-	m_texture->render(m_pos_x, m_pos_y, renderer);
+void Particle::render(
+	SDL_Renderer *renderer, 
+	const int &camera_x, 
+	const int &camera_y
+) {
+	m_texture->render(
+		m_pos_x - camera_x, 
+		m_pos_y - camera_y, 
+		renderer
+	);
 
 	if (m_shimmer_texture != NULL) {
-		m_shimmer_texture->render(m_pos_x, m_pos_y, renderer);
+		m_shimmer_texture->render(
+			m_pos_x - camera_x, 
+			m_pos_y - camera_y, 
+			renderer
+		);
 	}
 
 	m_animation_frame++;

@@ -10,3 +10,4 @@
 -I./libs/Window
 -I./libs/Particle
 -I./libs/ParticleSystem
+-I./libs/Camera

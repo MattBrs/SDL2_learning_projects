@@ -103,6 +103,7 @@ void Dot::move(
 ) {
 	// after we move the dot (both the first time or when we return
 	// to previous position because of conditions), we move the colliders
+
 	float movement_x = m_vel_x * time_step;
 	m_pos_x += movement_x;
 	shift_colliders();
@@ -124,8 +125,7 @@ void Dot::move(
 	) {
 		m_pos_y = m_pos_y < 0 ? 0 : constants::LEVEL_HEIGHT - DOT_HEIGHT;
 		shift_colliders();
-	}
- 
+	} 	
 }
 
 void Dot::shift_colliders() {
@@ -135,8 +135,8 @@ void Dot::shift_colliders() {
 
 void Dot::render(
 	SDL_Renderer* renderer, 
-	int &camera_pos_x, 
-	int &camera_pos_y
+	const int &camera_pos_x, 
+	const int &camera_pos_y
 ) {
 	m_dot_texture.render(
 		(int)m_pos_x - (int)camera_pos_x, 
@@ -145,10 +145,15 @@ void Dot::render(
 	);
 
 	if (m_particle_system != NULL) {
+	 	m_particle_system->set_pos(
+	 		(int)m_pos_x, 
+	 		(int)m_pos_y
+ 		);
+
 		m_particle_system->render(
 			renderer, 
-			(int)m_pos_x - (int)camera_pos_x, 
-			(int)m_pos_y - (int)camera_pos_y
+			(int)camera_pos_x, 
+			(int)camera_pos_y
 		);
 	}
 }

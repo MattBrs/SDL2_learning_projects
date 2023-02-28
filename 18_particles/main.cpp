@@ -1,4 +1,5 @@
 #include "SDL2/SDL.h"
+#include "Camera.hpp"
 #include "ParticleSystem.hpp"
 #include "SDL2/SDL_error.h"
 #include "SDL2/SDL_image.h"
@@ -31,6 +32,7 @@
 #include "Dot.hpp"
 
 using namespace texture;
+using namespace camera;
 
 Window g_window;
 SDL_Renderer* g_renderer = NULL;
@@ -160,14 +162,23 @@ void run(Dot &player) {
     bool quit = false;
     SDL_Event event;
 
-    SDL_Rect camera = {
-        player.get_pos_x(), 
-        player.get_pos_y(), 
-        g_window.get_window_width(), 
-        g_window.get_window_heigth()
-    };
+
+
+    Texture bg_texture;
+    bg_texture.load_from_path("textures/bg.png", g_renderer);
+
+    Dot other_dot (200, 200);
+    other_dot.load_texture("textures/dot.bmp", g_renderer);
 
     Timer delta_time;
+
+    Camera camera (
+        0, 
+        0, 
+        g_window.get_window_width(), 
+        g_window.get_window_heigth()
+    );
+
     while (!quit) {
         while (SDL_PollEvent(&event) != 0) {
             if (event.type == SDL_QUIT) {
@@ -176,46 +187,33 @@ void run(Dot &player) {
 
             g_window.handle_event(event, g_renderer);
             player.handle_event(event);
+            camera.handle_event(event);
         }
 
         if (!g_window.is_minimized()) {
-            player.move(delta_time.get_ticks() / 1000.f);
-            
-            camera.x = (player.get_pos_x() + Dot::DOT_WIDTH / 2)
-                - constants::WINDOW_WIDTH / 2;
-            camera.y = (player.get_pos_y() + Dot::DOT_HEIGHT / 2)
-                - constants::WINDOW_HEIGHT / 2;
+            player.move(
+                other_dot.get_collider(), 
+                delta_time.get_ticks() / 1000.f
+            );    
+            camera.move(delta_time.get_ticks() / 1000.f);
 
             delta_time.start();
-
-            if (camera.x < 0) {
-                camera.x = 0;
-            }
-
-            if (camera.x > constants::LEVEL_WIDTH - camera.w) {
-                camera.x = constants::LEVEL_WIDTH - camera.w;
-            }
-
-            if (camera.y < 0) {
-                camera.y = 0;
-            }
-
-            if (camera.y > constants::LEVEL_HEIGHT - camera.h) {
-                camera.y = constants::LEVEL_HEIGHT - camera.h;
-            }
-
 
             SDL_SetRenderDrawColor(g_renderer, 0xff, 0xff, 0xff, 0xff);
             SDL_RenderClear(g_renderer);
 
-            int temp_camera_x = 0;
-            int temp_camera_y = 0;
+            bg_texture.render(0, 0, g_renderer, &camera.get_camera_rect());
 
             player.render(
                 g_renderer, 
-                temp_camera_x, 
-                temp_camera_y
-            ); 
+                camera.get_pos_x(), 
+                camera.get_pos_y()
+            );     
+
+            other_dot.render(g_renderer, 
+                camera.get_pos_x(), 
+                camera.get_pos_y()
+            );
 
             SDL_RenderPresent(g_renderer);            
         }

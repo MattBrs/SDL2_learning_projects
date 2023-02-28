@@ -9,6 +9,7 @@ add_subdirectory(libs/Utils)
 add_subdirectory(libs/Window)
 add_subdirectory(libs/Particle)
 add_subdirectory(libs/ParticleSystem)
+add_subdirectory(libs/Camera)
 
 SET (deps_inc "/opt/homebrew/include/")
 
@@ -40,6 +41,7 @@ target_include_directories(main PRIVATE libs/Utils)
 target_include_directories(main PRIVATE libs/Window)
 target_include_directories(main PRIVATE libs/Particle)
 target_include_directories(main PRIVATE libs/ParticleSystem)
+target_include_directories(main PRIVATE libs/Camera)
 
 target_link_libraries(
-    main Texture Button Timer Dot Utils Window Particle ParticleSystem)
+    main Texture Button Timer Dot Utils Window Particle ParticleSystem Camera)

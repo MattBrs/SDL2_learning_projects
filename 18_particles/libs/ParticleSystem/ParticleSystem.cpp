@@ -19,8 +19,8 @@ bool ParticleSystem::init() {
 	m_particles.resize(m_max_particle_count);
 	for (int i = 0; i < m_particles.size(); ++i) {
 		m_particles[i] = new particle::Particle(
-			0, 
-			0, 
+			m_pos_x, 
+			m_pos_y, 
 			m_max_particle_life,
 			m_particle_textures[rand() % m_particle_textures.size()],
 			m_shimmer_texture_set ? &m_shimmer_texture:NULL
@@ -77,13 +77,17 @@ bool ParticleSystem::set_shimmer_texture_from_path(
 	return true;	
 }
 
-void ParticleSystem::render(SDL_Renderer *renderer, int pos_x, int pos_y) {
+void ParticleSystem::render(
+	SDL_Renderer *renderer,
+	const int &camera_x,
+	const int &camera_y
+) {
 	for (int i = 0; i < m_particles.size(); ++i) {
 		if (m_particles[i]->is_dead()) {
 			delete m_particles[i];
 			m_particles[i] = new particle::Particle(
-				pos_x, 
-				pos_y, 
+				(int)m_pos_x, 
+				(int)m_pos_y, 
 				m_max_particle_life,
 				m_particle_textures[rand() % m_particle_textures.size()],
 				(
@@ -94,6 +98,11 @@ void ParticleSystem::render(SDL_Renderer *renderer, int pos_x, int pos_y) {
 	}
 
 	for (int i = 0; i < m_particles.size(); ++i) {
-		m_particles[i]->render(renderer);
+		m_particles[i]->render(renderer, camera_x, camera_y);
 	}
+}
+
+void ParticleSystem::set_pos(float pos_x, float pos_y) {
+	m_pos_x = pos_x;
+	m_pos_y = pos_y;
 }

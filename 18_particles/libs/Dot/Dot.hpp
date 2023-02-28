@@ -31,8 +31,8 @@ public:
 	);
 	void render(
 		SDL_Renderer* renderer,
-		int &camera_pos_x, 
-		int &camera_pos_y
+		const int &camera_pos_x, 
+		const int &camera_pos_y
 	);
 	bool load_texture(std::string texture_path, SDL_Renderer* renderer);
 	void free();
@@ -46,6 +46,8 @@ public:
 private:
 	float m_pos_x;
 	float m_pos_y;
+	float m_last_pos_x;
+	float m_last_pos_y;
 
 	float m_vel_x;
 	float m_vel_y;

@@ -23,7 +23,11 @@ namespace particle {
 		);
 		~Particle();
 
-		void render(SDL_Renderer* renderer);
+		void render(
+			SDL_Renderer* renderer, 
+			const int &camera_x, 
+			const int &camera_y
+		);
 		bool is_dead();
 
 	private:
