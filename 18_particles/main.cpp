@@ -196,6 +196,10 @@ void run(Dot &player) {
                 delta_time.get_ticks() / 1000.f
             );    
             camera.move(delta_time.get_ticks() / 1000.f);
+            camera.move_with_player_pos(
+                player.get_pos_x(), 
+                player.get_pos_y()
+            );
 
             delta_time.start();
 
@@ -214,7 +218,7 @@ void run(Dot &player) {
                 camera.get_pos_x(), 
                 camera.get_pos_y()
             );
-
+            
             SDL_RenderPresent(g_renderer);            
         }
     }
