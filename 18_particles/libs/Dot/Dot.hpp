@@ -16,6 +16,7 @@ public:
 	static const int DOT_WIDTH = 20;
 	static const int DOT_HEIGHT = 20;
 	const int DOT_MAX_VEL = 300;
+	const int MAX_ACCELERATION = 50;
 
 	Dot();
 	Dot(int start_pos_x, int start_pos_y);

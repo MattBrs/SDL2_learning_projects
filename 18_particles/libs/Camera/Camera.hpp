@@ -9,7 +9,7 @@ namespace camera {
 		const int MAX_VEL = 600;
 		// camera moves if player enters the padding zone 
 		// (it surrounds the window)
-		const int DEFAULT_CAMERA_PADDING = 100;  
+		const int DEFAULT_CAMERA_BOUNDARY_PADDING = 100;  
 
 		Camera(int pos_x, int pos_y, int width, int height);
 		~Camera();
@@ -32,7 +32,7 @@ namespace camera {
 		SDL_Rect m_camera;
 		int m_vel_x = 0;
 		int m_vel_y = 0;
-		int m_camera_padding = DEFAULT_CAMERA_PADDING;
+		int m_camera_padding = DEFAULT_CAMERA_BOUNDARY_PADDING;
 		bool m_camera_automovement = false;
 
 		void handle_movement_input(const SDL_Keycode &keycode, int vel);

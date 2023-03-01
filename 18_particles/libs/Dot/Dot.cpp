@@ -59,6 +59,14 @@ void Dot::move(
 	shapes::Circle &other_collider, 
 	float time_step
 ) {
+	// TODO: Quando il giocatore viene mosso, devo applicare "attrito"
+	// al suo movimento. Quindi quando ho un keydown non lo applico, un keyup 
+	// lo rimetto. Questa funzione "move" vien echiamata ogni frame, quindi 
+	// lo calcoliamo qua.
+	// Devo togliere l'accelerazione alla curr_vel unsigned (ci tolgo il meno)
+	// se è diversa da 0 sottraggo (o aggiungo se era negativa).
+	// così si dovrebbe ottenere una decelerazione costante e fluida nel tempo.
+
 	// after we move the dot (both the first time or when we return
 	// to previous position because of conditions), we move the colliders
 	float movement_x = m_vel_x * time_step;
