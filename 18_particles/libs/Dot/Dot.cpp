@@ -6,8 +6,10 @@
 #include "SDL2/SDL_rect.h"
 #include <SDL2/SDL_events.h>
 #include <SDL2/SDL_render.h>
+#include <algorithm>
 #include <cstdio>
 #include <vector>
+#include "SDL2/SDL_scancode.h"
 #include "Utils.hpp"
 
 Dot::Dot(): Dot(constants::WINDOW_WIDTH / 2, constants::WINDOW_HEIGHT / 2) {}
@@ -30,28 +32,38 @@ Dot::~Dot() {
 	free();
 }
 
-void Dot::handle_movement_input(const SDL_Keycode &keycode, const int &vel) {
-	switch (keycode) {
-		case SDLK_w:
-			m_vel_y -= vel;
-			break;
-		case SDLK_a:
-			m_vel_x -= vel;
-			break;
-		case SDLK_s:
-			m_vel_y += vel;
-			break;
-		case SDLK_d:
-			m_vel_x += vel;
-			break;
-	}
-}
+void Dot::handle_movement(const Uint8* current_key_states) {
+	bool accelerating_x = false;
+	bool accelerating_y = false;
 
-void Dot::handle_event(SDL_Event &event) {
-	if (event.type == SDL_KEYDOWN && event.key.repeat == 0) {
-		handle_movement_input(event.key.keysym.sym, DOT_MAX_VEL);
-	} else if (event.type == SDL_KEYUP && event.key.repeat == 0) {
-		handle_movement_input(event.key.keysym.sym, -DOT_MAX_VEL);
+	if (current_key_states[SDL_SCANCODE_W]) {
+		m_vel_y -= MAX_ACCELERATION;
+		accelerating_y = true;
+	} 
+
+	if (current_key_states[SDL_SCANCODE_S]) {
+		m_vel_y += MAX_ACCELERATION;
+		accelerating_y = true;
+	} 
+
+	if (current_key_states[SDL_SCANCODE_A]) {
+		m_vel_x -= MAX_ACCELERATION;
+		accelerating_x = true;
+	} 
+	if (current_key_states[SDL_SCANCODE_D]) {
+		m_vel_x += MAX_ACCELERATION;
+		accelerating_x = true;
+	}
+
+	m_is_accelerating_x = accelerating_x;
+	m_is_accelerating_y = accelerating_y;
+
+	if (m_vel_x > DOT_MAX_VEL || m_vel_x < -DOT_MAX_VEL) {
+		m_vel_x = ((m_vel_x > 0) - (m_vel_x < 0)) * DOT_MAX_VEL;
+	}
+
+	if (m_vel_y > DOT_MAX_VEL || m_vel_y < -DOT_MAX_VEL) {
+		m_vel_y = ((m_vel_y > 0) - (m_vel_y < 0)) *  DOT_MAX_VEL;
 	}
 }
 
@@ -59,14 +71,6 @@ void Dot::move(
 	shapes::Circle &other_collider, 
 	float time_step
 ) {
-	// TODO: Quando il giocatore viene mosso, devo applicare "attrito"
-	// al suo movimento. Quindi quando ho un keydown non lo applico, un keyup 
-	// lo rimetto. Questa funzione "move" vien echiamata ogni frame, quindi 
-	// lo calcoliamo qua.
-	// Devo togliere l'accelerazione alla curr_vel unsigned (ci tolgo il meno)
-	// se è diversa da 0 sottraggo (o aggiungo se era negativa).
-	// così si dovrebbe ottenere una decelerazione costante e fluida nel tempo.
-
 	// after we move the dot (both the first time or when we return
 	// to previous position because of conditions), we move the colliders
 	float movement_x = m_vel_x * time_step;
@@ -77,6 +81,7 @@ void Dot::move(
 	if (m_pos_x < 0 || m_pos_x > constants::LEVEL_WIDTH - DOT_WIDTH) {
 		m_pos_x = m_pos_x < 0 ? 0 : constants::LEVEL_WIDTH - DOT_WIDTH;
 		// m_pos_x -= movement_x;
+		m_vel_x = 0;
 		shift_colliders();
 	}
 
@@ -84,6 +89,7 @@ void Dot::move(
 		collisions::check_collision(m_collider, other_collider) 
 	) {
 		m_pos_x -= movement_x;
+		m_vel_x = 0;
 		shift_colliders();
 	}
 
@@ -96,14 +102,43 @@ void Dot::move(
 		|| m_pos_y > constants::LEVEL_HEIGHT - DOT_HEIGHT
 	) {
 		m_pos_y = m_pos_y < 0 ? 0 : constants::LEVEL_HEIGHT - DOT_HEIGHT;
+		m_vel_y = 0;
 		shift_colliders();
 	}
 
 	if (collisions::check_collision(m_collider, other_collider)) {
 		m_pos_y -= movement_y;
+		m_vel_y = 0;
 		shift_colliders();
 	}
+
+	// handle if the curr vel is positive or negative 
+	// and subtract deceleration speed.
+	// if is accelerating, skip friction deceleration
+	if (!m_is_accelerating_x && m_vel_x > 0) {
+		m_vel_x = std::max(
+			(int) (m_vel_x - (MAX_DECELERATION * time_step * 100)),
+			0
+		);
+	} else if (!m_is_accelerating_x && m_vel_x < 0) {
+		m_vel_x = std::min(
+			(int) (m_vel_x - (-MAX_DECELERATION * time_step * 100)),
+			0
+		);
+	}
+
 	
+	if (!m_is_accelerating_y && m_vel_y > 0) {
+		m_vel_y = std::max(
+			(int) (m_vel_y - (MAX_DECELERATION * time_step * 100)),
+			0
+		);
+	} else if (!m_is_accelerating_y && m_vel_y < 0) {
+		m_vel_y = std::min(
+			(int) (m_vel_y - (-MAX_DECELERATION * time_step * 100)),
+			0
+		);
+	}	
 }
 
 void Dot::move( 

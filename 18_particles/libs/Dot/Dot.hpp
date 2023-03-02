@@ -8,6 +8,7 @@
 #include "Constants.hpp"
 #include "ParticleSystem.hpp"
 #include "SDL2/SDL_rect.h"
+#include "SDL2/SDL_stdinc.h"
 #include "Utils.hpp"
 #include <vector>
 
@@ -16,13 +17,14 @@ public:
 	static const int DOT_WIDTH = 20;
 	static const int DOT_HEIGHT = 20;
 	const int DOT_MAX_VEL = 300;
-	const int MAX_ACCELERATION = 50;
+	const int MAX_ACCELERATION = 30;
+	const int MAX_DECELERATION = 30;
 
 	Dot();
 	Dot(int start_pos_x, int start_pos_y);
 	~Dot();
 
-	void handle_event(SDL_Event &event);
+	void handle_movement(const Uint8* current_key_states);
 	void move(
 		shapes::Circle &other_collider, 
 		float time_step
@@ -47,18 +49,16 @@ public:
 private:
 	float m_pos_x;
 	float m_pos_y;
-	float m_last_pos_x;
-	float m_last_pos_y;
 
 	float m_vel_x;
 	float m_vel_y;
 
-	int m_particle_count = 3;
+	bool m_is_accelerating_x = false;
+	bool m_is_accelerating_y = false;
 
 	texture::Texture m_dot_texture;
 	shapes::Circle m_collider;
 	ParticleSystem* m_particle_system;
 
-	void handle_movement_input(const SDL_Keycode &keycode, const int &vel);
 	void shift_colliders();
 };

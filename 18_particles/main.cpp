@@ -180,15 +180,16 @@ void run(Dot &player) {
     );
 
     while (!quit) {
+        player.handle_movement(SDL_GetKeyboardState(NULL));
         while (SDL_PollEvent(&event) != 0) {
             if (event.type == SDL_QUIT) {
                 quit = true;
             }
 
             g_window.handle_event(event, g_renderer);
-            player.handle_event(event);
             camera.handle_event(event);
         }
+
 
         if (!g_window.is_minimized()) {
             player.move(
