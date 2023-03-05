@@ -1,0 +1,5 @@
+add_library(VerletRect VerletRect.cpp)
+target_include_directories(VerletRect PUBLIC "../Utils/")
+target_include_directories(VerletRect PUBLIC "../Types/")
+target_include_directories(VerletRect PUBLIC "../VerletObject/")
+target_include_directories(VerletRect PUBLIC "../Constants/")
