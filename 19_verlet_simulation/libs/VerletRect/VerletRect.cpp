@@ -26,6 +26,8 @@ VerletRect::VerletRect(
 	m_collider.pos_x = (float)(position.x + m_rect.w) / 2;
 	m_collider.pos_y = (float)(position.y + m_rect.h) / 2;
 	m_collider.radius = (float)m_rect.w / 2;
+
+	m_box_collider = m_rect;
 }
 VerletRect::~VerletRect() {
 	// do nothing
@@ -37,6 +39,7 @@ void VerletRect::render(SDL_Renderer* renderer) {
 	m_rect.y = m_current_position.y;
 	m_collider.pos_x = (float)(m_rect.x + m_rect.w) / 2;
 	m_collider.pos_y = (float)(m_rect.y + m_rect.h) / 2;
+	m_box_collider = m_rect;
 
 	SDL_RenderFillRect(renderer, &m_rect);
 }

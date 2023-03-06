@@ -175,7 +175,7 @@ void spawn_rect(Solver &physics_simulation, int pos_x, int pos_y) {
         pos_x,
         pos_y
     );
-    int size = 10 + (rand() % 40);
+    int size = 30 + (rand() % 100);
     Vector2<double> rect_size (size, size);
 
 

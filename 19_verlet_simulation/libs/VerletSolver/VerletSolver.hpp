@@ -29,9 +29,9 @@ namespace verletSolver {
 		void apply_gravity();
 		void apply_constraint();
 
-		bool isclamped(float mid, float A, float B);
-		bool checkcollisiononeway(SDL_Rect rectA, SDL_Rect rectB);
-		bool checkcollisionbothways(SDL_Rect rectA, SDL_Rect rectB);
+		bool is_clamped(float mid, float a, float b);
+		bool check_collision_one_way(SDL_Rect rect_a, SDL_Rect rect_b);
+		bool check_collision_both_ways(SDL_Rect rect_a, SDL_Rect rect_b);
 
 	};
 }

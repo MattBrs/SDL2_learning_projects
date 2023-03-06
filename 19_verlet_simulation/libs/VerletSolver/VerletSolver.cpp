@@ -1,6 +1,7 @@
 #include "VerletSolver.hpp"
 
 #include "Constants.hpp"
+#include "SDL2/SDL_rect.h"
 #include "Types.hpp"
 #include "Utils.hpp"
 #include "VerletObject.hpp"
@@ -81,6 +82,7 @@ void Solver::apply_constraint() {
 }
 
 void Solver::handle_collitions() {
+	/*
 	const float response_coeff = 0.75f;
 
 	for (int i = 0; i < m_objects.size(); ++i) {
@@ -117,4 +119,129 @@ void Solver::handle_collitions() {
 			}
 		}
 	}
+	*/
+
+	for (int i = 0; i < m_objects.size(); ++i) { 
+		verletObject::VerletObject* obj_1 = m_objects[i];
+
+		for (int j = i + 1; j < m_objects.size(); ++j) {
+			verletObject::VerletObject* obj_2 = m_objects[j];
+			if (check_collision_both_ways(
+				obj_1->m_box_collider, obj_2->m_box_collider)
+			) {
+				SDL_Rect box_1 = obj_1->m_box_collider;
+				SDL_Rect box_2 = obj_2->m_box_collider;
+
+				/*
+				double collision_radians_1 = 
+					atan2(box_1.y - box_2.y, box_1.x - box_2.x);
+				double collision_degrees_1 = 
+					collision_radians_1 * (180.0/3.141592653589793238463);
+				printf("collision degrees box 1:  %f\n", collision_degrees_1);
+
+				double collision_radians_2 = 
+					atan2(box_2.y - box_1.y, box_2.x - box_1.x);
+				double collision_degrees_2 = 
+					collision_radians_2 * (180.0/3.141592653589793238463);
+				printf("collision degrees box 2:  %f\n\n", collision_degrees_2);
+
+				Vector2<double> obj_velocity_1 = 
+					obj_1->m_current_position - obj_1->m_old_position;
+				Vector2<double> obj_velocity_2 = 
+					obj_2->m_current_position - obj_2->m_old_position;
+
+				
+				obj_1->m_current_position += obj_velocity_1 * 0.3f;
+				obj_1->m_collider.pos_x = obj_1->m_current_position.x;
+				obj_1->m_collider.pos_y = obj_1->m_current_position.y;
+
+				obj_2->m_current_position += obj_velocity_2 * 0.1f;
+				obj_2->m_collider.pos_x = obj_2->m_current_position.x;
+				obj_2->m_collider.pos_y = obj_2->m_current_position.y;
+				*/
+
+				float difference_x = 
+					((float)(box_1.x + box_1.w) / 2) - ((float)(box_2.x + box_2.w) / 2); 
+				float difference_y =
+						((float)(box_1.y + box_1.h) / 2) 
+						- 
+						((float)(box_2.y + box_2.h) / 2);
+
+				if (
+					abs(difference_x / box_2.w) > abs(difference_y / box_2.h)
+				) {
+					if (difference_x < 0) {
+						float new_pos = box_2.x - box_1.w;
+						float vel = 
+							(new_pos - obj_1->m_current_position.x) / 2;
+						obj_1->m_current_position.x += vel;
+						obj_2->m_current_position.x -= vel;
+					} else {
+						float new_pos = box_2.x + box_2.x;
+						float vel = 
+							(new_pos - obj_1->m_current_position.x) / 2;
+						obj_1->m_current_position.x += vel;
+						obj_2->m_current_position.x -= vel;
+					}
+				} else {
+					if (difference_y < 0) {
+						float new_pos = box_2.y - box_1.h;
+						float vel = (new_pos - obj_1->m_current_position.y) / 2;
+						obj_1->m_current_position.y += vel;
+						obj_2->m_current_position.y -= vel;
+					} else {
+						float new_pos = box_2.y + box_2.h;
+						float vel = (new_pos - obj_1->m_current_position.y) / 2;
+						obj_1->m_current_position.y += vel;
+						obj_2->m_current_position.y -= vel;
+					}
+				}
+
+				obj_1->m_collider.pos_x = obj_1->m_current_position.x;
+				obj_1->m_collider.pos_y = obj_1->m_current_position.y;
+				obj_2->m_collider.pos_x = obj_2->m_current_position.x;
+				obj_2->m_collider.pos_y = obj_2->m_current_position.y;
+			}
+		}
+	}
+}
+
+
+bool Solver::is_clamped(float mid, float a, float b)
+{
+    if (a > b)
+    {
+        return mid >= b && mid <= a;
+    }
+    return mid >= a && mid <= b;
+}
+
+bool Solver::check_collision_one_way(SDL_Rect rect_a, SDL_Rect rect_b) {
+	float left_a, right_a, top_a, bottom_a;
+	float left_b, right_b, top_b, bottom_b;
+
+	left_a = rect_a.x;
+	right_a = rect_a.x + rect_a.w;
+	top_a = rect_a.y;
+	bottom_a = rect_a.y + rect_a.h;
+
+	left_b = rect_b.x;
+	right_b = rect_b.x + rect_b.w;
+	top_b = rect_b.y;
+	bottom_b = rect_b.y + rect_b.h;
+
+    if (
+    	(is_clamped(left_a, left_b, right_b) 
+		|| is_clamped(right_a, left_b, right_b)) 
+		&& 
+		(is_clamped(bottom_a, bottom_b, top_b) 
+		|| is_clamped(top_a, bottom_b, top_b))
+	) {
+        return true;
+    }
+    return false;
+}
+
+bool Solver::check_collision_both_ways(SDL_Rect rectA, SDL_Rect rectB) {
+    return check_collision_one_way(rectA, rectB) || check_collision_one_way(rectB, rectA);
 }

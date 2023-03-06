@@ -1,5 +1,6 @@
 #pragma once
 
+#include "SDL2/SDL_rect.h"
 #include "SDL2/SDL_render.h"
 #include "Types.hpp"
 #include "Utils.hpp"
@@ -15,6 +16,7 @@ namespace verletObject {
 		types::Vector2<double> m_acceleration;
 		types::Vector2<double> m_size;
 		shapes::Circle m_collider;
+		SDL_Rect m_box_collider;
 
 		void update_position(float delta_time);
 		void accelerate(types::Vector2<double> acc);
